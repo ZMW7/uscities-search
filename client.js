@@ -74,9 +74,17 @@ function jsonToHtmlTable(data) {
     return '<ul class="city-list">' + items + '</ul>';
 }
 
-// Instant Ajax Request — fires on every keyup, not just Enter
+// Instant Ajax Request — at least two characters before suggesting and debounce about 300ms after the last keystroke
+var debounceTimer = null;
 searchInput.addEventListener('keyup', function (event) {
-    search();
-    if (event.key === 'Enter') 
+    if (event.key === 'Enter') {
+        clearTimeout(debounceTimer);
+        search();
         searchInput.value = ''; // clear the field after an explicit Enter search
+        return;
+    }
+    clearTimeout(debounceTimer);
+    var query = searchInput.value.trim();
+    if (query.length < 2) return;            // AC5: need at least 2 characters before suggesting
+    debounceTimer = setTimeout(search, 300); // AC7: debounce approx 300ms after the last keystroke
 });
