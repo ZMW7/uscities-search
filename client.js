@@ -30,11 +30,33 @@ searchInput.addEventListener('keypress', function(e) {
 const BASE_URL = "https://uscities-microservices-x6il.onrender.com";
 async function search() {
     const query = searchInput.value.trim();
-    if (!query || query.length === 0) return; // AC9: empty/whitespace-only queries never reach fetch()
+    if (!query) return; // AC9: empty/whitespace-only queries never reach fetch()
     console.log(`Debug>query: ${query}`);
+    try {
+        const response = await fetch(`${BASE_URL}/uscities-search/${encodeURIComponent(query)}`);
+        if (!response.ok) {
+            throw new Error(`Unexepected status ${response.status}`); // AC4 / AC11: fail safely, not open
+        }
+        const data = await response.json();
+        if (!Array.isArray(data)) {
+            throw new Error('Malformed response'); // AC10: validate shape before display
+        }
+        displaySearch(data);
+    } catch (err) {
+        console.log(`Debug> search error: ${err.message}`);
+        response.textContent = 'Error: could not load results.'; // AC4 / AC11
+    }
 }
 
 var responsesElm = document.getElementById('responses');
 function displaySearch(data) {
     // To do
+    if (!responsesElm) {
+        console.log('Error in getting "responses"');
+        return;
+    }
+    // AC1 / AC2: matches found - this version only shows the raw JSON text
+    // AC3: no matches - explicit message instead of a blank / empty display
+    // textContent for now
+    responsesElm.textContent = data.length === 0 ? 'No cities found' : JSON.stringify(data, null, 2);
 }
