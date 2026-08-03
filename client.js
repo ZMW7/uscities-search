@@ -67,9 +67,9 @@ function data_sanitize(v) {
 }
 function jsonToHtmlTable(data) {
     if (!Array.isArray(data) || data.length === 0) return "No cities found"; // AC10 / AC11
-    var rows = data.map(function (c) {
-        return "<tr><td>" + data_sanitize(c.city) + "</td><td>" + data_sanitize(c.state_name) +
-               "</td><td>" + data_sanitize(c.zips) + "</td></tr>";
+    var items = data.map(function (c) {
+        return '<li class="city-card"><strong>' + data_sanitize(c.city) + "</strong>, " + data_sanitize(c.state_name) +
+               ' <span class="zips">' + data_sanitize(c.zips) + "</span></li>";
     }).join('');
-    return "<table><tr><th>City</th><th>State</th><th>Zips</th></tr>" + rows + "</table>";
+    return '<ul class="city-list">' + items + '</ul>';
 }
