@@ -73,3 +73,10 @@ function jsonToHtmlTable(data) {
     }).join('');
     return '<ul class="city-list">' + items + '</ul>';
 }
+
+// Instant Ajax Request — fires on every keyup, not just Enter
+searchInput.addEventListener('keyup', function (event) {
+    search();
+    if (event.key === 'Enter') 
+        searchInput.value = ''; // clear the field after an explicit Enter search
+});
